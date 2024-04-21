@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/FRONTEND/css/stylesListagen.css">
+  <title>AERONAVE</title>
+  <script>
+    function requestListaDeAeronaves() {
+      const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      };
+      return fetch('http://localhost:3000/obterAeronaves', requestOptions)
+        .then((response) => response.json());
+    }
+    
+    function preencherTabela(aeronaves) {
+      // Acessando o tbody pelo id.
+      const tblBody = document.getElementById("TblAviaoDados");
+  
+      aeronaves.forEach((aeronave) => {
+        const row = document.createElement("tr");
+  
+        // Preenchendo as colunas com os campos desejados.
+        row.innerHTML = `
+          <td class="leftText">${aeronave.codigo}</td>
+          <td class="leftText">${aeronave.modelo}</td>
+          <td class="leftText">${aeronave.fabricante}</td>
+          <td class="rightText">${aeronave.anoFabricacao}</td>`;
+  
+        tblBody.appendChild(row);
+      });
+    }
+  
+    function exibirAeronaves() {
+      requestListaDeAeronaves()
+        .then((customResponse) => {
+          if (customResponse.status === "SUCCESS") {
+            preencherTabela(customResponse.payload);
+          } else {
+            console.log(customResponse.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Erro ao exibir aeronaves:", error);
+        });
+    }
+  
+    document.addEventListener("DOMContentLoaded", exibirAeronaves); // Executa quando a página é carregada.
+  </script>
+</head>
+<body>
+  <header>
+    <div>
+      <h1 class="h1">Lista de Aeronaves</h1>
+      <hr class="hr">
+    </div>
+  </header>
+  <main>
+    <div>
+      <table id="TblAviao" class="table">
+        <thead>
+          <tr>
+            <th class="th">ID</th>
+            <th class="th">Modelo</th>
+            <th class="th">Fabricante</th>
+            <th class="th">Ano de Fabricação</th>
+          </tr>
+        </thead>
+        <tbody id="TblAviaoDados">
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>

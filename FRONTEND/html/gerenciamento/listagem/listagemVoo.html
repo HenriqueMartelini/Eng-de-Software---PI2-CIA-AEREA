@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/FRONTEND/css/stylesListagen.css">
+  <title>Voos</title>
+  <script>
+    function requestListaDeVoos() {
+      const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      };
+      return fetch('http://localhost:3000/obterVoo', requestOptions)
+        .then((response) => response.json());
+    }
+    
+    function preencherTabela(voos) {
+      const tblBody = document.getElementById("TblVoosDados");
+  
+      voos.forEach((voo) => {
+        const row = document.createElement("tr");
+  
+        row.innerHTML = `
+          <td class="leftText">${voo.codigo}</td>
+          <td class="leftText">${voo.hora_origem}</td>
+          <td class="leftText">${voo.data_origem}</td>
+          <td class="leftText">${voo.hora_chegada}</td>
+          <td class="leftText">${voo.data_chegada}</td>
+          <td class="leftText">${voo.aeroporto_origem}</td>
+          <td class="leftText">${voo.aeroporto_chegada}</td>
+          <td class="leftText">${voo.trecho_id}</td>
+          <td class="leftText">${voo.aeronave_id}</td>
+          <td class="rightText">${voo.valor}</td>`;
+  
+        tblBody.appendChild(row);
+      });
+    }
+  
+    function exibirVoos() {
+      requestListaDeVoos()
+        .then((customResponse) => {
+          if (customResponse.status === "SUCCESS") {
+            preencherTabela(customResponse.payload);
+          } else {
+            console.log(customResponse.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Erro ao exibir voos:", error);
+        });
+    }
+  
+    document.addEventListener("DOMContentLoaded", exibirVoos);
+  </script>
+</head>
+<body>
+  <header>
+    <div>
+      <h1 class="h1">Lista de Voos</h1>
+      <hr>
+    </div>
+  </header>
+  <main>
+    <div>
+      <table id="TblVoos" class="table">
+        <thead>
+          <tr>
+            <th class="th">Código</th>
+            <th class="th">Hora de Origem</th>
+            <th class="th">Data de Origem</th>
+            <th class="th">Hora de Chegada</th>
+            <th class="th">Data de Chegada</th>
+            <th class="th">Aeroporto de Origem</th>
+            <th class="th">Aeroporto de Chegada</th>
+            <th class="th">ID do Trecho</th>
+            <th class="th">ID da aeronave</th>
+            <th class="th">Valor</th>
+          </tr>
+        </thead>
+        <tbody id="TblVoosDados">
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>
